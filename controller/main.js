@@ -28,19 +28,23 @@ exports.addAppointment = (req,res,next)=>{
 }
 
 exports.removeAppointment = (req,res,next)=>{
-    const id = req.params.id;
-    User.findByPk(id)
-        .then(user=>{
-            return user.destroy();
-        })
-        .then(result=>{
-            console.log('deleted');
-        })
-        .catch(err=>{
+    try{
+        if(req.params.id=='undefined'){
+            console.log('ID missing');
+            return res.status(400).json({err:'ID missing'});
+        }
+        const uId = req.params.id
+        User.destroy({where: {id:uId}}).then(result=>{
+            res.sendStatus(200);
+        }).catch(err=>{
             console.log(err);
-        })
-        res.json({id});
+        });
+    }catch(err){
+        console.log(err);
+        res.status(500).json(err);
+    }
     
 }
+
 exports.getEditAppointment
 exports.postEditAppointment
